@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="mr" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>आत्मनिरीक्षण आणि भविष्यकथन</title>
+
+  <!-- Google Fonts: IBM Plex Sans and IBM Plex Sans Devanagari -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Devanagari:wght@300;400;500;600;700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"IBM Plex Sans Devanagari"', '"IBM Plex Sans"', 'sans-serif'],
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      font-family: 'IBM Plex Sans Devanagari', 'IBM Plex Sans', sans-serif;
+      word-break: normal;
+      overflow-wrap: break-word;
+      word-wrap: break-word;
+      hyphens: none;
+      -webkit-hyphens: none;
+      -ms-hyphens: none;
+      transition: background-color 0.4s ease, color 0.4s ease;
+    }
+
+    .text-justify-marathi {
+      text-align: justify;
+      text-justify: inter-word;
+      hyphens: none;
+      -webkit-hyphens: none;
+    }
+
+    /* Soft ambient background gradients */
+    .bg-light-canvas {
+      background-color: #f8fafc;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(224, 238, 255, 0.6) 0%, transparent 40%),
+        radial-gradient(circle at 90% 80%, rgba(254, 243, 199, 0.5) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, #fdfbf7 0%, #f8fafc 100%);
+    }
+
+    .dark .bg-light-canvas {
+      background-color: #0d1117;
+      background-image: 
+        radial-gradient(circle at 15% 15%, rgba(30, 41, 59, 0.7) 0%, transparent 40%),
+        radial-gradient(circle at 85% 85%, rgba(20, 28, 45, 0.8) 0%, transparent 45%),
+        radial-gradient(circle at 50% 50%, #0d1117 0%, #090d16 100%);
+    }
+
+    /* SVG Keyframe Animations */
+    @keyframes pulseGlow {
+      0%, 100% {
+        transform: scale(1);
+        opacity: 0.85;
+      }
+      50% {
+        transform: scale(1.06);
+        opacity: 1;
+      }
+    }
+
+    @keyframes rotateWheel {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes waveOrbit {
+      0% { stroke-dashoffset: 0; }
+      100% { stroke-dashoffset: 240; }
+    }
+
+    @keyframes floatSparkle {
+      0%, 100% { transform: translateY(0px) scale(0.9); opacity: 0.6; }
+      50% { transform: translateY(-5px) scale(1.15); opacity: 1; }
+    }
+
+    @keyframes innerSightBeam {
+      0%, 100% { opacity: 0.35; transform: scaleY(0.9); }
+      50% { opacity: 0.85; transform: scaleY(1.1); }
+    }
+
+    .anim-pulse {
+      animation: pulseGlow 4s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    .anim-rotate-slow {
+      animation: rotateWheel 36s linear infinite;
+      transform-origin: center;
+    }
+
+    .anim-orbit {
+      stroke-dasharray: 12 16;
+      animation: waveOrbit 16s linear infinite;
+    }
+
+    .anim-sparkle-1 {
+      animation: floatSparkle 3.2s ease-in-out infinite;
+      transform-origin: center;
+    }
+
+    .anim-sparkle-2 {
+      animation: floatSparkle 4.5s ease-in-out infinite 1.2s;
+      transform-origin: center;
+    }
+
+    .anim-sparkle-3 {
+      animation: floatSparkle 3.8s ease-in-out infinite 0.7s;
+      transform-origin: center;
+    }
+
+    .anim-beam {
+      animation: innerSightBeam 3s ease-in-out infinite alternate;
+      transform-origin: center bottom;
+    }
+  </style>
+</head>
+<body class="bg-light-canvas text-slate-800 dark:text-slate-100 min-h-screen antialiased flex flex-col justify-between selection:bg-amber-200 dark:selection:bg-amber-800 selection:text-amber-950 dark:selection:text-amber-100">
+
+  <header class="w-full max-w-4xl mx-auto px-4 sm:px-6 pt-5 pb-3 flex justify-end items-center gap-3">
+    <!-- Web Share Button -->
+    <button 
+      id="shareBtn" 
+      type="button" 
+      class="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-sm font-medium bg-white/80 dark:bg-slate-800/80 backdrop-blur border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+      aria-label="Share page"
+      title="Share"
+    >
+      <svg class="w-4 h-4 text-amber-600 dark:text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/>
+      </svg>
+      <span class="text-xs sm:text-sm">Share</span>
+    </button>
+
+    <!-- Theme Toggle Button -->
+    <button 
+      id="themeToggleBtn" 
+      type="button" 
+      class="p-2 sm:px-3 sm:py-2 rounded-xl text-sm font-medium bg-white/80 dark:bg-slate-800/80 backdrop-blur border border-slate-200/80 dark:border-slate-700/80 text-slate-700 dark:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-700 active:scale-95 transition-all shadow-sm focus:outline-none focus:ring-2 focus:ring-amber-500/50"
+      aria-label="Toggle Theme"
+      title="Toggle light and dark mode"
+    >
+      <!-- Sun icon (shown in dark mode) -->
+      <svg id="sunIcon" class="w-4 h-4 hidden text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <circle cx="12" cy="12" r="4"></circle>
+        <path stroke-linecap="round" stroke-linejoin="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+      </svg>
+      <!-- Moon icon (shown in light mode) -->
+      <svg id="moonIcon" class="w-4 h-4 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+      </svg>
+    </button>
+  </header>
+
+  <main class="w-full max-w-3xl mx-auto px-4 sm:px-8 py-4 sm:py-6 flex-grow">
+    <div class="bg-white/90 dark:bg-slate-900/85 backdrop-blur-md rounded-3xl p-6 sm:p-10 md:p-12 shadow-[0_8px_30px_rgb(0,0,0,0.06)] dark:shadow-[0_8px_30px_rgb(0,0,0,0.4)] border border-slate-200/60 dark:border-slate-800 transition-colors duration-300">
+      
+      <!-- Animated SVG Graphic: Introspection (Inner Reflection) & Foretelling (Cosmic Vision & Clarity) -->
+      <div class="flex justify-center mb-6" aria-hidden="true">
+        <svg class="w-44 h-44 sm:w-56 sm:h-56 filter drop-shadow-md" viewBox="0 0 240 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="auraGlow" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35" />
+              <stop offset="50%" stop-color="#a855f7" stop-opacity="0.25" />
+              <stop offset="100%" stop-color="#f59e0b" stop-opacity="0.3" />
+            </linearGradient>
+
+            <linearGradient id="orbitStroke" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#06b6d4" />
+              <stop offset="50%" stop-color="#8b5cf6" />
+              <stop offset="100%" stop-color="#f59e0b" />
+            </linearGradient>
+
+            <linearGradient id="mirrorGrad" x1="20%" y1="0%" x2="80%" y2="100%">
+              <stop offset="0%" stop-color="#e0e7ff" stop-opacity="0.9" />
+              <stop offset="50%" stop-color="#f1f5f9" stop-opacity="0.6" />
+              <stop offset="100%" stop-color="#cbd5e1" stop-opacity="0.3" />
+            </linearGradient>
+
+            <radialGradient id="eyeIris" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fef08a" />
+              <stop offset="45%" stop-color="#f59e0b" />
+              <stop offset="85%" stop-color="#6366f1" />
+              <stop offset="100%" stop-color="#3b82f6" />
+            </radialGradient>
+          </defs>
+
+          <!-- Outer Pulsing Aura -->
+          <circle cx="120" cy="120" r="102" fill="url(#auraGlow)" class="anim-pulse" />
+
+          <!-- Outer Cosmic Timeline Orbit (Rotating Wheel of Time) -->
+          <circle cx="120" cy="120" r="88" stroke="url(#orbitStroke)" stroke-width="2.2" stroke-linecap="round" class="anim-orbit" />
+          
+          <!-- Dharma / Introspection Inner Subtle Ring with Markers -->
+          <g class="anim-rotate-slow">
+            <circle cx="120" cy="120" r="74" stroke="#8b5cf6" stroke-width="1.2" stroke-dasharray="3 7" opacity="0.6" />
+            <circle cx="120" cy="46" r="3" fill="#f59e0b" />
+            <circle cx="120" cy="194" r="3" fill="#06b6d4" />
+            <circle cx="46" cy="120" r="3" fill="#a855f7" />
+            <circle cx="194" cy="120" r="3" fill="#ec4899" />
+          </g>
+
+          <!-- Inner Reflection Well / Mirror Oval of the Mind -->
+          <ellipse cx="120" cy="120" rx="56" ry="60" fill="url(#mirrorGrad)" stroke="#c7d2fe" stroke-width="1.8" />
+
+          <!-- Inner Clarity Pillar Light Beam -->
+          <polygon points="112,170 128,170 123,76 117,76" fill="url(#orbitStroke)" class="anim-beam" opacity="0.35" />
+
+          <!-- The Eye of Awakening & Consciousness (आत्मदृष्टी / थर्ड आय) -->
+          <!-- Eye contours -->
+          <path d="M78 120 C94 94, 146 94, 162 120 C146 146, 94 146, 78 120 Z" fill="#ffffff" fill-opacity="0.92" stroke="#6366f1" stroke-width="2.5" stroke-linejoin="round" />
+          
+          <!-- Iris and Radiant Pupil of Foresight -->
+          <circle cx="120" cy="120" r="18" fill="url(#eyeIris)" />
+          <circle cx="120" cy="120" r="8" fill="#1e1b4b" />
+          <circle cx="116" cy="116" r="3.2" fill="#ffffff" />
+
+          <!-- Foretelling & Introspection Sparkles / Insights -->
+          <!-- Sparkle Top Right -->
+          <g class="anim-sparkle-1">
+            <path d="M165 68 L168 76 L176 79 L168 82 L165 90 L162 82 L154 79 L162 76 Z" fill="#f59e0b" />
+          </g>
+          <!-- Sparkle Bottom Left -->
+          <g class="anim-sparkle-2">
+            <path d="M72 155 L74 161 L80 163 L74 165 L72 171 L70 165 L64 163 L70 161 Z" fill="#06b6d4" />
+          </g>
+          <!-- Sparkle Upper Center Intuition -->
+          <g class="anim-sparkle-3">
+            <path d="M120 44 L122 49 L127 51 L122 53 L120 58 L118 53 L113 51 L118 49 Z" fill="#a855f7" />
+          </g>
+        </svg>
+      </div>
+
+      <article class="space-y-6 sm:space-y-7 leading-relaxed sm:leading-loose text-[16px] sm:text-[18px]">
+
+        <!-- Centered Document Title -->
+        <h1 class="text-center font-bold text-2xl sm:text-3xl md:text-4xl tracking-normal text-slate-900 dark:text-white pt-1 pb-3">
+          आत्मनिरीक्षण आणि भविष्यकथन
+        </h1>
+
+        <!-- Main Body Paragraph 1 -->
+        <p class="text-justify-marathi leading-relaxed sm:leading-[2.05] text-slate-700 dark:text-slate-200">
+          जीवनात आनंद अर्थात happiness मिळवायचा असेल तर त्यासाठी सर्वात महत्वाचे आहे ते म्हणजे मानसिक स्वास्थ्य. ते मिळवण्याच्या प्रवासात आत्मनिरीक्षण करण्याला अर्थात introspectionला अनन्यसाधारण महत्व आहे.
+        </p>
+
+        <!-- Main Body Paragraph 2 -->
+        <p class="text-justify-marathi leading-relaxed sm:leading-[2.05] text-slate-700 dark:text-slate-200">
+          ‘आत्मनिरीक्षण’ म्हणजे भानावर राहून जागरूकपणे केलेली स्वतःच्याच विचारांची, वर्तणुकीची आणि भावनांची केलेली समीक्षा.
+        </p>
+
+        <!-- Main Body Paragraph 3 -->
+        <p class="text-justify-marathi leading-relaxed sm:leading-[2.05] text-slate-700 dark:text-slate-200">
+          रोजच्या जीवनात आपण असंख्य विचार आणि कृती करत असतो. काही कृत्ये आपण जाणीवपूर्वक करतो, काही सवयीने होत असतात आणि काही अजाणतेपणे. विचारांचे देखील तसेच आहे. या सर्वांचा आपल्या वागण्या-बोलण्यावर, व्यक्तिमत्वावर प्रभाव पडत असतो.
+        </p>
+
+        <!-- Main Body Paragraph 4 -->
+        <p class="text-justify-marathi leading-relaxed sm:leading-[2.05] text-slate-700 dark:text-slate-200">
+          निसर्गतः आपण एक सामाजिक प्राणी (social animal) आहोत. त्यामुळे Overall Happiness मिळवायचा असेल तर समाजामध्ये आपण कसे वागतो आणि आपली सामाजिक प्रतिमा काय आहे हे अत्यंत महत्वाचे ठरते. चुकीचे आचार-विचार आपली सामाजिक प्रतिमा तर बिघडवतातच पण ते आपल्या overall well-being साठी देखील हानिकारक असतात. घरातील व्यक्ती, आप्त-स्वकीय आणि एकंदरीत सर्वच समाजाकडून आपल्याला मिळणारे सहकार्य आणि साहचर्य याची quantity आणि quality आपल्या सामाजिक प्रतिमेवर अवलंबून असते.
+        </p>
+
+        <!-- Main Body Paragraph 5 -->
+        <p class="text-justify-marathi leading-relaxed sm:leading-[2.05] text-slate-700 dark:text-slate-200">
+          आपली एकंदर ‘प्रतिमा’ काय आहे हे जितक्या स्वच्छपणे आपले आपल्याला दिसू शकते ते इतर कोणी सांगून कळणे तसे दुरापास्त. यासाठी प्रामाणिक आत्मनिरीक्षण करणे उत्तम. हे प्रारंभी अवघड वाटते खरे पण नेटाने करत राहिले तर जमते.
+        </p>
+
+        <!-- Main Body Paragraph 6 -->
+        <p class="text-justify-marathi leading-relaxed sm:leading-[2.05] text-slate-700 dark:text-slate-200">
+          एकदा का ‘आपण जे काही बोललो-वागलो ते’ त्रयस्थ आणि तटस्थपणे ‘बघणे’ अर्थात आत्मानिरीक्षण जमू लागले की विचारांत बरीच clarity येऊ लागते. आपल्या चुका दृष्टीस पडू लागतात. स्वतःच्या वागण्या-बोलण्यातील योग्य-अयोग्यता तपासता येऊ लागते. आणि हो, हा सगळा ‘आपुलाची वाद आपणासी’ असल्याने घडून गेलेल्या गोष्टींबाबत जे काय खजील व्हायचे असते ते स्वतःशी. अंदरकी बात अंदर. झाकली मूठ, मग ती रुपयाची असो वा सव्वालाखाची - आपलीच!
+        </p>
+
+        <!-- Centered Decorative Wheels -->
+        <div class="text-center py-2 tracking-widest text-amber-600 dark:text-amber-400 select-none text-xl sm:text-2xl font-normal" aria-hidden="true">
+          ☸☸☸
+        </div>
+
+        <!-- Centered Interrogative Subheading -->
+        <h2 class="text-center font-semibold text-xl sm:text-2xl text-slate-900 dark:text-white py-1">
+          आता यात भविष्यकथन कुठे आले?
+        </h2>
+
+        <!-- Centered Decorative Wheels -->
+        <div class="text-center py-2 tracking-widest text-amber-600 dark:text-amber-400 select-none text-xl sm:text-2xl font-normal" aria-hidden="true">
+          ☸☸☸
+        </div>
+
+        <!-- Main Body Paragraph 7 -->
+        <p class="text-justify-marathi leading-relaxed sm:leading-[2.05] text-slate-700 dark:text-slate-200">
+          जरा जरा आत्मनिरीक्षण जमू लागले की आपल्या विचार आणि कृतीत एक प्रकारची clarity येते. ‘वर्तमानात राहणे’ जमू लागते. भूतकाळात झालेले ‘प्रमाद’ उमगल्याने साहजिकच आपला प्रयत्न त्यांची पुनरावृत्ती न होऊ देण्याकडे असतो. याचा एक परिणाम असा होतो की वर्तमानात काय चुकीचे/निरर्थक केले किंवा होऊ दिले नाही म्हणजे काय टळेल याचा अचूक अंदाज बांधता येऊ लागतो व आपल्याकडून आपोआप योग्य ते आणि तितकेच केले जाते. ‘स्ट्रेस’ (तणाव) निर्माणच होत नाही. किंबहुना आपण होऊ देत नाही. आतून गार वाटते.
+        </p>
+
+        <!-- Main Body Paragraph 8 -->
+        <p class="text-justify-marathi leading-relaxed sm:leading-[2.05] text-slate-700 dark:text-slate-200">
+          असा हा ‘अचूक अंदाज बांधता येणे’ म्हणजे भविष्य वर्तवता येणे नाहीये तर मग दुसरे काय?
+        </p>
+
+        <!-- Centered Closing Wheel Marker -->
+        <div class="text-center pt-3 pb-1 tracking-widest text-amber-600 dark:text-amber-400 select-none text-xl sm:text-2xl font-normal" aria-hidden="true">
+          ☸☸☸
+        </div>
+
+        <!-- Centered Date & Wheel -->
+        <div class="text-center font-medium text-slate-600 dark:text-slate-300 tracking-wider text-base sm:text-lg pt-1 pb-4">
+          २०२४०५२४
+        </div>
+
+      </article>
+    </div>
+  </main>
+
+  <!-- Toast notification message for copied link / share feedback -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 px-5 py-2.5 bg-slate-900 text-white dark:bg-white dark:text-slate-900 text-sm font-medium rounded-full shadow-lg opacity-0 pointer-events-none transition-all duration-300 z-50">
+    Link copied to clipboard!
+  </div>
+
+  <script>
+    /* Theme Toggle Management */
+    const htmlEl = document.documentElement;
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const sunIcon = document.getElementById('sunIcon');
+    const moonIcon = document.getElementById('moonIcon');
+
+    // Detect saved theme or system preference
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const storedTheme = localStorage.getItem('theme');
+
+    if (storedTheme === 'dark' || (!storedTheme && prefersDark)) {
+      htmlEl.classList.add('dark');
+      sunIcon.classList.remove('hidden');
+      moonIcon.classList.add('hidden');
+    } else {
+      htmlEl.classList.remove('dark');
+      sunIcon.classList.add('hidden');
+      moonIcon.classList.remove('hidden');
+    }
+
+    themeToggleBtn.addEventListener('click', function() {
+      const isDark = htmlEl.classList.toggle('dark');
+      if (isDark) {
+        sunIcon.classList.remove('hidden');
+        moonIcon.classList.add('hidden');
+        localStorage.setItem('theme', 'dark');
+      } else {
+        sunIcon.classList.add('hidden');
+        moonIcon.classList.remove('hidden');
+        localStorage.setItem('theme', 'light');
+      }
+    });
+
+    /* Toast Notification Helper */
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      toast.textContent = message;
+      toast.classList.remove('opacity-0', 'pointer-events-none');
+      toast.classList.add('opacity-100');
+      setTimeout(function() {
+        toast.classList.remove('opacity-100');
+        toast.classList.add('opacity-0', 'pointer-events-none');
+      }, 2500);
+    }
+
+    /* Clipboard Copy Fallback */
+    function copyUrlToClipboard() {
+      const currentUrl = window.location.href;
+      try {
+        const tempInput = document.createElement('input');
+        tempInput.value = currentUrl;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+        showToast('Link copied to clipboard!');
+      } catch (err) {
+        showToast('Could not copy link');
+      }
+    }
+
+    /* Share Button Event */
+    const shareBtn = document.getElementById('shareBtn');
+    shareBtn.addEventListener('click', function() {
+      const shareData = {
+        title: 'आत्मनिरीक्षण आणि भविष्यकथन',
+        text: 'आत्मनिरीक्षण आणि भविष्यकथन - विचारांची, वर्तणुकीची आणि भावनांची समीक्षा.',
+        url: window.location.href
+      };
+
+      if (navigator.share) {
+        navigator.share(shareData).catch(function(err) {
+          // If share was dismissed or failed, fallback gracefully without alerting
+          if (err.name !== 'AbortError') {
+            copyUrlToClipboard();
+          }
+        });
+      } else {
+        copyUrlToClipboard();
+      }
+    });
+  </script>
+</body>
+</html>
